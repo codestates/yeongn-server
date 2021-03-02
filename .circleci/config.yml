@@ -1,0 +1,31 @@
+jobs:
+  test:
+    executor:
+      name: node/default
+      tag: '13.14'
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          name: Running Test Code
+          command: npm run test
+      - run:
+          name: Installing deployment dependencies
+          command: |
+            sudo apt-get -y -qq update            
+            sudo apt-get install python3-pip python3-dev build-essential
+            sudo pip3 install awsebcli --upgrade
+      - run:
+          name: Deploying
+          command: |
+            git config --global core.autocrlf input
+            eb deploy Yeongnmarket-env
+      - store_test_results:
+          path: ~/project/artifacts/test
+orbs:
+  node: circleci/node@3.0.0
+version: 2.1
+workflows:
+  test_my_app:
+    jobs:
+      - test
