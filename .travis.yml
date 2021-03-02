@@ -1,0 +1,32 @@
+language: generic
+
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t sleepybird96/yeongn-server -f ./Dockerfile.dev ./
+
+script:
+  - docker run -e CI=true sleepybird96/yeongn-server npm test
+
+after_success:
+  - docker build -t sleepybird96/yeongn-server ./
+
+  - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_ID" --password-stdin
+
+  - docker push sleepybird96/yeongn-server ./
+
+deploy:
+  provider: elasticbeanstalk
+  region: 'ap-northeast-2'
+  app: 'yeongn-market'
+  env: 'Yeongnmarket-env'
+  bucket_name: elasticbeanstalk-ap-northeast-2-054199156431
+  bucket_path: 'yeongn-market'
+  on:
+    branch: dev
+
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
