@@ -1,7 +1,49 @@
 version: 2.1
-orbs:
-  node: circleci/node@3.0.0
+jobs:
+  build-and-deploy:
+    docker:
+      - image: circleci/node:latest
+
+    working_directory: ./app
+
+    steps:
+      - checkout
+
+      - setup_remote_docker
+
+      - run:
+          name: Install AWS CLI
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y awscli
+
+      - run:
+          name: Build
+          command: docker build -t sleepybird96/yeongn-server .
+
+      - run:
+          name: Push
+          command: |
+            docker login -u$DOCKERHUB_LOGIN -p$DOCKERHUB_PASSWORD
+            docker tag sleepybird96/yeongn-server sleepybird96/yeongn-server:${CIRCLE_SHA1}
+            docker push sleepybird96/yeongn-server
+            docker push sleepybird96/yeongn-server:${CIRCLE_SHA1}
+
+      - run:
+          name: Deploy
+          command: |
+            zip -r deployment-${CIRCLE_SHA1}.zip .
+            aws s3 cp deployment-${CIRCLE_SHA1}.zip s3://yeongn-market-eb --region ap-northeast-2
+            aws elasticbeanstalk create-application-version --application-name yeongn-market \
+                --version-label ${CIRCLE_SHA1} --source-bundle S3Bucket="yeongn-market-eb",S3Key="deployment-${CIRCLE_SHA1}.zip" --region ap-northeast-2
+            aws elasticbeanstalk update-environment --application-name yeongn-market \
+                --environment-name Yeongnmarket-env --version-label ${CIRCLE_SHA1} --region ap-northeast-2
+
 workflows:
-  node-tests:
+  version: 2.1
+  build-and-deploy:
     jobs:
-      - node/test
+      - build-and-deploy:
+          filters:
+            branches:
+              only: dev
