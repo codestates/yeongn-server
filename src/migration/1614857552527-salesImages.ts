@@ -6,11 +6,11 @@ import {
   TableForeignKey,
 } from 'typeorm';
 
-export class appraisalsImages1614856874643 implements MigrationInterface {
+export class salesImages1614857552527 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'appraisalsImages',
+        name: 'salesImages',
         columns: [
           {
             name: 'id',
@@ -25,30 +25,30 @@ export class appraisalsImages1614856874643 implements MigrationInterface {
       }),
     );
     await queryRunner.addColumn(
-      'appraisalsImages',
+      'salesImages',
       new TableColumn({
-        name: 'appraisalId',
+        name: 'salesId',
         type: 'int',
       }),
     );
     await queryRunner.createForeignKey(
-      'appraisalsImages',
+      'salesImages',
       new TableForeignKey({
-        columnNames: ['appraisalId'],
+        columnNames: ['salesId'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'appraisals',
+        referencedTableName: 'sales',
         onDelete: 'CASCADE',
       }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable('appraisalsImages');
+    const table = await queryRunner.getTable('salesImages');
     const foreignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('appraisalId') !== -1,
+      (fk) => fk.columnNames.indexOf('salesId') !== -1,
     );
-    await queryRunner.dropForeignKey('appraisalsImages', foreignKey);
-    await queryRunner.dropColumn('appraisalsImages', 'appraisalId');
-    await queryRunner.dropTable('appraisalsImages');
+    await queryRunner.dropForeignKey('salesImages', foreignKey);
+    await queryRunner.dropColumn('salesImages', 'salesId');
+    await queryRunner.dropTable('salesImages');
   }
 }
