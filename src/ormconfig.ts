@@ -11,6 +11,7 @@ const config: ConnectionOptions = {
   database: 'yeongn',
   timezone: '+09:00',
   entities: [__dirname + '/**/*.entity{.ts,.js}'],
+  synchronize: false,
 };
 
 export = config;
