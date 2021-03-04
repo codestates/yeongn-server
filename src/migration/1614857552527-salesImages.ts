@@ -27,14 +27,14 @@ export class salesImages1614857552527 implements MigrationInterface {
     await queryRunner.addColumn(
       'salesImages',
       new TableColumn({
-        name: 'salesId',
+        name: 'saleId',
         type: 'int',
       }),
     );
     await queryRunner.createForeignKey(
       'salesImages',
       new TableForeignKey({
-        columnNames: ['salesId'],
+        columnNames: ['saleId'],
         referencedColumnNames: ['id'],
         referencedTableName: 'sales',
         onDelete: 'CASCADE',
@@ -45,10 +45,10 @@ export class salesImages1614857552527 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     const table = await queryRunner.getTable('salesImages');
     const foreignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('salesId') !== -1,
+      (fk) => fk.columnNames.indexOf('saleId') !== -1,
     );
     await queryRunner.dropForeignKey('salesImages', foreignKey);
-    await queryRunner.dropColumn('salesImages', 'salesId');
+    await queryRunner.dropColumn('salesImages', 'saleId');
     await queryRunner.dropTable('salesImages');
   }
 }
