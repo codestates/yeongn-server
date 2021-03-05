@@ -14,6 +14,6 @@ export class User {
   @Column()
   social: string;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'datetime', default: 'now()' })
   createdAt: Date;
 }
