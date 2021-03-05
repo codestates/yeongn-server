@@ -1,6 +1,10 @@
-import {Entity} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'salesImages' })
 export class salesImage {
+  @PrimaryGeneratedColumn()
+  id: number;
 
+  @Column()
+  path: string;
 }
