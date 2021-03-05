@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Appraisal } from './Appraisal.entity';
 
 @Entity({ name: 'appraisalsImages' })
 export class AppraisalsImage {
@@ -7,4 +8,7 @@ export class AppraisalsImage {
 
   @Column()
   path: string;
+
+  @ManyToOne(() => Appraisal, (appraisal) => appraisal.appraisalsImages)
+  appraisal: Appraisal;
 }
