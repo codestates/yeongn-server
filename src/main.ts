@@ -24,6 +24,15 @@ async function bootstrap() {
       maxAge: 864e3,
     },
   });
+  app.enableCors({
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:80',
+      'https://www.yeongn.com',
+      'http://www.yeongn.com',
+      'http://frontend',
+    ],
+  });
   await app.listen(4000, '0.0.0.0');
 }
 bootstrap();
