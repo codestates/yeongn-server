@@ -32,6 +32,7 @@ async function bootstrap() {
       'http://www.yeongn.com',
       'http://frontend',
     ],
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   });
   await app.listen(4000, '0.0.0.0');
 }
