@@ -4,11 +4,17 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { JwtService } from './jwt/jwt.service';
+import { AppraisalController } from './appraisal/appraisal.controller';
+import { ShopController } from './shop/shop.controller';
+import { ShopService } from './shop/shop.service';
+import { ShopModule } from './shop/shop.module';
+import { AppraisalService } from './appraisal/appraisal.service';
+import { AppraisalModule } from './appraisal/appraisal.module';
 import * as ormconfig from './ormconfig';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(ormconfig), UserModule],
-  controllers: [AppController],
-  providers: [AppService, JwtService],
+  imports: [TypeOrmModule.forRoot(ormconfig), UserModule, ShopModule, AppraisalModule],
+  controllers: [AppController, AppraisalController, ShopController],
+  providers: [AppService, JwtService, ShopService, AppraisalService],
 })
 export class AppModule {}
