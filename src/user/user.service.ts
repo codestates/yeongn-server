@@ -81,7 +81,52 @@ export class UserService {
       throw new BadGatewayException();
     }
   }
-  naverLogin(req: FastifyRequest) {}
+  async naverLogin({ authorizationCode }, session) {
+    if (!authorizationCode) {
+      throw new ForbiddenException();
+    }
+    try {
+      const CLIENT_ID = '6uSvluf8fHGhNvp6U3j2';
+      const GET_TOKEN_URI = `https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=${CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET_NAVER}&code=${authorizationCode}`;
+      const GET_DATA_URI = 'https://openapi.naver.com/v1/nid/me';
+
+      const accessTokenFromNaver = await this.httpService
+        .get(GET_TOKEN_URI)
+        .toPromise();
+      console.log(accessTokenFromNaver, '토큰');
+      const dataFromToken = await this.httpService
+        .get(GET_DATA_URI, {
+          headers: {
+            Authorization: `Bearer ${accessTokenFromNaver.data.access_token}`,
+          },
+        })
+        .toPromise();
+      const { email, nickname } = dataFromToken.data.response;
+      const userData = await this.usersRepository.findOne({ email });
+      if (userData) {
+        const token = this.jwt.signToken({ ...userData });
+        session.set('token', token);
+        return {
+          nickname,
+          email,
+        };
+      } else {
+        const newUser = new User();
+        newUser.nickname = nickname;
+        newUser.email = email;
+        newUser.social = 'naver';
+        await this.usersRepository.save(newUser);
+        const token = this.jwt.signToken({ ...newUser });
+        session.set('token', token);
+        return {
+          nickname,
+          email,
+        };
+      }
+    } catch {
+      throw new BadGatewayException();
+    }
+  }
   kakaoLogin(req: FastifyRequest) {}
   appraisalCount() {}
   withdrawal() {}
