@@ -1,4 +1,9 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 
 @Controller('appraisal')
-export class AppraisalController {}
+export class AppraisalController {
+  @Get()
+  home() {
+    return 'Welcome to my Appraisal API';
+  }
+}
