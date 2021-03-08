@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FastifyRequest } from 'fastify';
 import { User } from '../entity/User.entity';
+import { JwtService } from '../jwt/jwt.service';
 
 @Injectable()
 export class UserService {
@@ -15,8 +16,9 @@ export class UserService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private httpService: HttpService,
+    private jwt: JwtService,
   ) {}
-  async googleLogin({ authorizationCode }) {
+  async googleLogin({ authorizationCode }, session) {
     if (!authorizationCode) {
       throw new ForbiddenException();
     }
@@ -53,6 +55,28 @@ export class UserService {
         })
         .toPromise();
       console.log(dataFromToken);
+      const { email, name } = dataFromToken.data;
+      const userData = await this.usersRepository.findOne({ email });
+      if (userData) {
+        const token = this.jwt.signToken({ ...userData });
+        session.set('token', token);
+        return {
+          nickname: name,
+          email,
+        };
+      } else {
+        const newUser = new User();
+        newUser.nickname = name;
+        newUser.email = email;
+        newUser.social = 'google';
+        await this.usersRepository.save(newUser);
+        const token = this.jwt.signToken({ ...newUser });
+        session.set('token', token);
+        return {
+          nickname: name,
+          email,
+        };
+      }
     } catch {
       throw new BadGatewayException();
     }

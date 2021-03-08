@@ -1,4 +1,12 @@
-import { Controller, Get, Req, Post, Delete, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Req,
+  Post,
+  Delete,
+  Body,
+  Session,
+} from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 import { UserService } from './user.service';
 import { AuthorizationCodeDto } from './dto/AuthorizationCode.dto';
@@ -8,8 +16,11 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('/google')
-  googleLogin(@Body() authorizationCode: AuthorizationCodeDto) {
-    return this.userService.googleLogin(authorizationCode);
+  googleLogin(
+    @Body() authorizationCode: AuthorizationCodeDto,
+    @Req() request: FastifyRequest,
+  ) {
+    return this.userService.googleLogin(authorizationCode, request.session);
   }
 
   @Post('/naver')
