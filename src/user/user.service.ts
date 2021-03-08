@@ -9,16 +9,22 @@ import { Repository } from 'typeorm';
 import { FastifyRequest } from 'fastify';
 import { User } from '../entity/User.entity';
 import { JwtService } from '../jwt/jwt.service';
+import { CookieSerializeOptions } from 'fastify-cookie';
 
 @Injectable()
 export class UserService {
+  private readonly COOKIE_OPTION: CookieSerializeOptions = {
+    secure: false,
+    httpOnly: false,
+    maxAge: 1000 * 60 * 10,
+  };
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private httpService: HttpService,
     private jwt: JwtService,
   ) {}
-  async googleLogin({ authorizationCode }, session) {
+  async googleLogin({ authorizationCode }, res) {
     if (!authorizationCode) {
       throw new ForbiddenException();
     }
@@ -59,7 +65,9 @@ export class UserService {
       const userData = await this.usersRepository.findOne({ email });
       if (userData) {
         const token = this.jwt.signToken({ ...userData });
-        session.set('token', token);
+        res.setCookie('token', token, this.COOKIE_OPTION);
+        res.setCookie('username', name, this.COOKIE_OPTION);
+        res.setCookie('email', email, this.COOKIE_OPTION);
         return {
           nickname: name,
           email,
@@ -71,7 +79,9 @@ export class UserService {
         newUser.social = 'google';
         await this.usersRepository.save(newUser);
         const token = this.jwt.signToken({ ...newUser });
-        session.set('token', token);
+        res.setCookie('token', token, this.COOKIE_OPTION);
+        res.setCookie('username', name, this.COOKIE_OPTION);
+        res.setCookie('email', email, this.COOKIE_OPTION);
         return {
           nickname: name,
           email,
@@ -81,7 +91,7 @@ export class UserService {
       throw new BadGatewayException();
     }
   }
-  async naverLogin({ authorizationCode }, session) {
+  async naverLogin({ authorizationCode }, res) {
     if (!authorizationCode) {
       throw new ForbiddenException();
     }
@@ -105,7 +115,9 @@ export class UserService {
       const userData = await this.usersRepository.findOne({ email });
       if (userData) {
         const token = this.jwt.signToken({ ...userData });
-        session.set('token', token);
+        res.setCookie('token', token, this.COOKIE_OPTION);
+        res.setCookie('username', nickname, this.COOKIE_OPTION);
+        res.setCookie('email', email, this.COOKIE_OPTION);
         return {
           nickname,
           email,
@@ -117,7 +129,9 @@ export class UserService {
         newUser.social = 'naver';
         await this.usersRepository.save(newUser);
         const token = this.jwt.signToken({ ...newUser });
-        session.set('token', token);
+        res.setCookie('token', token, this.COOKIE_OPTION);
+        res.setCookie('username', nickname, this.COOKIE_OPTION);
+        res.setCookie('email', email, this.COOKIE_OPTION);
         return {
           nickname,
           email,

@@ -6,8 +6,9 @@ import {
   Delete,
   Body,
   Session,
+  Res,
 } from '@nestjs/common';
-import { FastifyRequest } from 'fastify';
+import { FastifyRequest, FastifyReply } from 'fastify';
 import { UserService } from './user.service';
 import { AuthorizationCodeDto } from './dto/AuthorizationCode.dto';
 
@@ -18,17 +19,17 @@ export class UserController {
   @Post('/google')
   googleLogin(
     @Body() authorizationCode: AuthorizationCodeDto,
-    @Req() request: FastifyRequest,
+    @Res() reply: FastifyReply,
   ) {
-    return this.userService.googleLogin(authorizationCode, request.session);
+    return this.userService.googleLogin(authorizationCode, reply);
   }
 
   @Post('/naver')
   naverLogin(
     @Body() authorizationCode: AuthorizationCodeDto,
-    @Req() request: FastifyRequest,
+    @Res() reply: FastifyReply,
   ) {
-    return this.userService.naverLogin(authorizationCode, request.session);
+    return this.userService.naverLogin(authorizationCode, reply);
   }
 
   @Post('/kakao')
