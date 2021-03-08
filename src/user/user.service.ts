@@ -81,7 +81,45 @@ export class UserService {
       throw new BadGatewayException();
     }
   }
-  naverLogin(req: FastifyRequest) {}
+  async naverLogin({ authorizationCode }, session) {
+    if (!authorizationCode) {
+      throw new ForbiddenException();
+    }
+    try {
+      const GET_TOKEN_URI = 'https://nid.naver.com/oauth2.0/token';
+      const GET_DATA_URI = 'https://openapi.naver.com/v1/nid/me';
+      const CLIENT_ID = '6uSvluf8fHGhNvp6U3j2';
+      console.log(authorizationCode, 'authCode');
+      const accessTokenFromNaver = await this.httpService
+        .post(
+          GET_TOKEN_URI,
+          {
+            client_id: CLIENT_ID,
+            client_secret: process.env.CLIENT_SECRET,
+            code: authorizationCode,
+            grant_type: 'authorization_code',
+          },
+          {
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+          },
+        )
+        .toPromise();
+      console.log(accessTokenFromNaver, '토큰');
+      const dataFromToken = await this.httpService
+        .get(GET_DATA_URI, {
+          headers: {
+            Authorization: `Bearer ${accessTokenFromNaver.data.access_token}`,
+          },
+        })
+        .toPromise();
+      console.log(dataFromToken, '토큰으로 얻어낸 데이타');
+    } catch {
+      throw new BadGatewayException();
+    }
+  }
   kakaoLogin(req: FastifyRequest) {}
   appraisalCount() {}
   withdrawal() {}
