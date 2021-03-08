@@ -28,7 +28,7 @@ export class UserController {
     @Body() authorizationCode: AuthorizationCodeDto,
     @Req() request: FastifyRequest,
   ) {
-    return this.userService.googleLogin(authorizationCode, request.session);
+    return this.userService.naverLogin(authorizationCode, request.session);
   }
 
   @Post('/kakao')

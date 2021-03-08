@@ -86,26 +86,12 @@ export class UserService {
       throw new ForbiddenException();
     }
     try {
-      const GET_TOKEN_URI = 'https://nid.naver.com/oauth2.0/token';
-      const GET_DATA_URI = 'https://openapi.naver.com/v1/nid/me';
       const CLIENT_ID = '6uSvluf8fHGhNvp6U3j2';
-      console.log(authorizationCode, 'authCode');
+      const GET_TOKEN_URI = `https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=${CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET_NAVER}&code=${authorizationCode}`;
+      const GET_DATA_URI = 'https://openapi.naver.com/v1/nid/me';
+
       const accessTokenFromNaver = await this.httpService
-        .post(
-          GET_TOKEN_URI,
-          {
-            client_id: CLIENT_ID,
-            client_secret: process.env.CLIENT_SECRET,
-            code: authorizationCode,
-            grant_type: 'authorization_code',
-          },
-          {
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-          },
-        )
+        .get(GET_TOKEN_URI)
         .toPromise();
       console.log(accessTokenFromNaver, '토큰');
       const dataFromToken = await this.httpService
@@ -115,7 +101,28 @@ export class UserService {
           },
         })
         .toPromise();
-      console.log(dataFromToken, '토큰으로 얻어낸 데이타');
+      const { email, nickname } = dataFromToken.data.response;
+      const userData = await this.usersRepository.findOne({ email });
+      if (userData) {
+        const token = this.jwt.signToken({ ...userData });
+        session.set('token', token);
+        return {
+          nickname,
+          email,
+        };
+      } else {
+        const newUser = new User();
+        newUser.nickname = nickname;
+        newUser.email = email;
+        newUser.social = 'naver';
+        await this.usersRepository.save(newUser);
+        const token = this.jwt.signToken({ ...newUser });
+        session.set('token', token);
+        return {
+          nickname,
+          email,
+        };
+      }
     } catch {
       throw new BadGatewayException();
     }
