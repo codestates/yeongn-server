@@ -24,8 +24,11 @@ export class UserController {
   }
 
   @Post('/naver')
-  naverLogin(@Req() request: FastifyRequest) {
-    return this.userService.naverLogin(request);
+  naverLogin(
+    @Body() authorizationCode: AuthorizationCodeDto,
+    @Req() request: FastifyRequest,
+  ) {
+    return this.userService.naverLogin(authorizationCode, request.session);
   }
 
   @Post('/kakao')
