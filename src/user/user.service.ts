@@ -68,10 +68,10 @@ export class UserService {
         res.setCookie('token', token, this.COOKIE_OPTION);
         res.setCookie('username', name, this.COOKIE_OPTION);
         res.setCookie('email', email, this.COOKIE_OPTION);
-        return {
+        res.send({
           nickname: name,
           email,
-        };
+        });
       } else {
         const newUser = new User();
         newUser.nickname = name;
@@ -82,10 +82,10 @@ export class UserService {
         res.setCookie('token', token, this.COOKIE_OPTION);
         res.setCookie('username', name, this.COOKIE_OPTION);
         res.setCookie('email', email, this.COOKIE_OPTION);
-        return {
+        res.send({
           nickname: name,
           email,
-        };
+        });
       }
     } catch {
       throw new BadGatewayException();
@@ -118,10 +118,10 @@ export class UserService {
         res.setCookie('token', token, this.COOKIE_OPTION);
         res.setCookie('username', nickname, this.COOKIE_OPTION);
         res.setCookie('email', email, this.COOKIE_OPTION);
-        return {
+        res.send({
           nickname,
           email,
-        };
+        });
       } else {
         const newUser = new User();
         newUser.nickname = nickname;
@@ -132,10 +132,10 @@ export class UserService {
         res.setCookie('token', token, this.COOKIE_OPTION);
         res.setCookie('username', nickname, this.COOKIE_OPTION);
         res.setCookie('email', email, this.COOKIE_OPTION);
-        return {
+        res.send({
           nickname,
           email,
-        };
+        });
       }
     } catch {
       throw new BadGatewayException();
