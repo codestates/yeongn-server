@@ -10,9 +10,6 @@ import { AppraisalService } from './appraisal/appraisal.service';
 import { ShopController } from './shop/shop.controller';
 import { ShopService } from './shop/shop.service';
 import { ShopModule } from './shop/shop.module';
-import { AppraisalService } from './appraisal/appraisal.service';
-import { AppraisalModule } from './appraisal/appraisal.module';
-import { AppraisalController } from './appraisal/appraisal.controller';
 import * as ormconfig from './ormconfig';
 
 @Module({
