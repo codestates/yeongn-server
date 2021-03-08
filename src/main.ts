@@ -33,6 +33,7 @@ async function bootstrap() {
       'http://frontend',
     ],
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    credentials: true,
   });
   await app.listen(4000, '0.0.0.0');
 }
