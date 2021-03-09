@@ -14,7 +14,7 @@ export class User {
   nickname: string;
 
   @Column()
-  email: string;
+  socialId: string;
 
   @Column()
   social: string;
