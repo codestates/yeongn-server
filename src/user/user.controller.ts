@@ -33,8 +33,11 @@ export class UserController {
   }
 
   @Post('/kakao')
-  kakaoLogin(@Req() request: FastifyRequest) {
-    return this.userService.kakaoLogin(request);
+  kakaoLogin(
+    @Body() authorizationCode: AuthorizationCodeDto,
+    @Res() reply: FastifyReply,
+  ) {
+    return this.userService.kakaoLogin(authorizationCode, reply);
   }
 
   @Post('/logout')

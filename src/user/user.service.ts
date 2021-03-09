@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { FastifyRequest } from 'fastify';
+// import { FastifyRequest } from 'fastify';
 import { User } from '../entity/User.entity';
 import { JwtService } from '../jwt/jwt.service';
 import { CookieSerializeOptions } from 'fastify-cookie';
@@ -17,6 +17,7 @@ export class UserService {
     secure: false,
     httpOnly: false,
     maxAge: 1000 * 60 * 10,
+    path: '/',
   };
   constructor(
     @InjectRepository(User)
@@ -42,7 +43,7 @@ export class UserService {
             client_secret: process.env.CLIENT_SECRET,
             code: authorizationCode,
             grant_type: 'authorization_code',
-            redirect_uri: 'https://www.yeongn.com/login',
+            redirect_uri: 'http://localhost:3000/login',
           },
           {
             headers: {
@@ -60,31 +61,32 @@ export class UserService {
           },
         })
         .toPromise();
-      console.log(dataFromToken);
-      const { email, name } = dataFromToken.data;
-      const userData = await this.usersRepository.findOne({ email });
+      const { id, name } = dataFromToken.data;
+      const userData = await this.usersRepository.findOne({
+        socialId: id,
+        social: 'google',
+      });
+      console.log(userData);
       if (userData) {
         const token = this.jwt.signToken({ ...userData });
         res.setCookie('token', token, this.COOKIE_OPTION);
-        res.setCookie('username', name, this.COOKIE_OPTION);
-        res.setCookie('email', email, this.COOKIE_OPTION);
+        res.setCookie('userId', userData.id, this.COOKIE_OPTION);
         res.send({
-          nickname: name,
-          email,
+          userId: userData.id,
+          token,
         });
       } else {
         const newUser = new User();
         newUser.nickname = name;
-        newUser.email = email;
+        newUser.socialId = id;
         newUser.social = 'google';
         await this.usersRepository.save(newUser);
         const token = this.jwt.signToken({ ...newUser });
         res.setCookie('token', token, this.COOKIE_OPTION);
-        res.setCookie('username', name, this.COOKIE_OPTION);
-        res.setCookie('email', email, this.COOKIE_OPTION);
+        res.setCookie('userId', newUser.id, this.COOKIE_OPTION);
         res.send({
-          nickname: name,
-          email,
+          userId: newUser.id,
+          token,
         });
       }
     } catch {
@@ -103,7 +105,6 @@ export class UserService {
       const accessTokenFromNaver = await this.httpService
         .get(GET_TOKEN_URI)
         .toPromise();
-      console.log(accessTokenFromNaver, '토큰');
       const dataFromToken = await this.httpService
         .get(GET_DATA_URI, {
           headers: {
@@ -111,37 +112,92 @@ export class UserService {
           },
         })
         .toPromise();
-      const { email, nickname } = dataFromToken.data.response;
-      const userData = await this.usersRepository.findOne({ email });
+      console.log(dataFromToken);
+      const { id, nickname } = dataFromToken.data.response;
+      const userData = await this.usersRepository.findOne({
+        socialId: id,
+        social: 'naver',
+      });
+      console.log(userData);
       if (userData) {
         const token = this.jwt.signToken({ ...userData });
         res.setCookie('token', token, this.COOKIE_OPTION);
-        res.setCookie('username', nickname, this.COOKIE_OPTION);
-        res.setCookie('email', email, this.COOKIE_OPTION);
+        res.setCookie('userId', userData.id, this.COOKIE_OPTION);
         res.send({
-          nickname,
-          email,
+          userId: userData.id,
+          token,
         });
       } else {
         const newUser = new User();
         newUser.nickname = nickname;
-        newUser.email = email;
+        newUser.socialId = id;
         newUser.social = 'naver';
         await this.usersRepository.save(newUser);
         const token = this.jwt.signToken({ ...newUser });
         res.setCookie('token', token, this.COOKIE_OPTION);
-        res.setCookie('username', nickname, this.COOKIE_OPTION);
-        res.setCookie('email', email, this.COOKIE_OPTION);
+        res.setCookie('userId', newUser.id, this.COOKIE_OPTION);
         res.send({
-          nickname,
-          email,
+          userId: newUser.id,
+          token,
         });
       }
     } catch {
       throw new BadGatewayException();
     }
   }
-  kakaoLogin(req: FastifyRequest) {}
+  async kakaoLogin({ authorizationCode }, res) {
+    if (!authorizationCode) {
+      throw new ForbiddenException();
+    }
+    try {
+      const CLIENT_ID = 'b862dc01a142ef533360f21219d2247b';
+      const GET_TOKEN_URI = `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${CLIENT_ID}&redirect_uri=http://localhost:3000/login&code=${authorizationCode}&client_secret=${process.env.CLIENT_SECRET_KAKAO}`;
+      const GET_DATA_URI = 'https://kapi.kakao.com/v2/user/me';
+
+      const accessTokenFromKakao = await this.httpService
+        .get(GET_TOKEN_URI)
+        .toPromise();
+      console.log(accessTokenFromKakao);
+      const dataFromToken = await this.httpService
+        .get(GET_DATA_URI, {
+          headers: {
+            Authorization: `Bearer ${accessTokenFromKakao.data.access_token}`,
+          },
+        })
+        .toPromise();
+      const socialId = dataFromToken.data.id;
+      const nickname = dataFromToken.data.properties.nickname;
+      const userData = await this.usersRepository.findOne({
+        socialId,
+        social: 'kakao',
+      });
+      if (userData) {
+        console.log(userData);
+        const token = this.jwt.signToken({ ...userData });
+        res.setCookie('token', token, this.COOKIE_OPTION);
+        res.setCookie('userId', userData.id, this.COOKIE_OPTION);
+        res.send({
+          userId: userData.id,
+          token,
+        });
+      } else {
+        const newUser = new User();
+        newUser.nickname = nickname;
+        newUser.socialId = socialId;
+        newUser.social = 'kakao';
+        await this.usersRepository.save(newUser);
+        const token = this.jwt.signToken({ ...newUser });
+        res.setCookie('token', token, this.COOKIE_OPTION);
+        res.setCookie('userId', newUser.id, this.COOKIE_OPTION);
+        res.send({
+          userId: newUser.id,
+          token,
+        });
+      }
+    } catch {
+      throw new BadGatewayException();
+    }
+  }
   appraisalCount() {}
   withdrawal() {}
   logout() {}

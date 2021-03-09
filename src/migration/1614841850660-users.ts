@@ -16,7 +16,7 @@ export class users1614841850660 implements MigrationInterface {
             type: 'varchar',
           },
           {
-            name: 'email',
+            name: 'socialId',
             type: 'varchar',
           },
           {
