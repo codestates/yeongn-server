@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
-import { JwtService } from './jwt/jwt.service';
 import { AppraisalModule } from './appraisal/appraisal.module';
 import { ShopModule } from './shop/shop.module';
 import * as ormconfig from './ormconfig';
@@ -16,6 +15,6 @@ import * as ormconfig from './ormconfig';
     AppraisalModule,
   ],
   controllers: [AppController],
-  providers: [AppService, JwtService],
+  providers: [AppService],
 })
 export class AppModule {}
