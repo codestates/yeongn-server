@@ -18,7 +18,7 @@ export class UserService {
     httpOnly: false,
     maxAge: 1000 * 60 * 10,
     path: '/',
-    domain: 'localhost',
+    domain: 'yeongn.com',
   };
   constructor(
     @InjectRepository(User)
