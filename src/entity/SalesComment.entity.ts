@@ -13,9 +13,17 @@ export class SalesComment {
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @ManyToOne(() => User, (user) => user.salesComments)
+  @ManyToOne(() => User, (user) => user.salesComments, {
+    onDelete: 'CASCADE',
+  })
   user: User;
+  @Column()
+  userId: number;
 
-  @ManyToOne(() => Sale, (sale) => sale.salesComments)
+  @ManyToOne(() => Sale, (sale) => sale.salesComments, {
+    onDelete: 'CASCADE',
+  })
   sale: Sale;
+  @Column()
+  saleId: number;
 }

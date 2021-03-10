@@ -32,8 +32,12 @@ export class Appraisal {
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @ManyToOne(() => User, (user) => user.appraisals)
+  @ManyToOne(() => User, (user) => user.appraisals, {
+    onDelete: 'CASCADE',
+  })
   user: User;
+  @Column()
+  userId: number;
 
   @OneToMany(
     () => AppraisalsComment,

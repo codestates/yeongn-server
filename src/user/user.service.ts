@@ -54,7 +54,6 @@ export class UserService {
           },
         )
         .toPromise();
-      console.log(accessTokenFromGoogle);
       const dataFromToken = await this.httpService
         .get(GET_DATA_URI, {
           headers: {

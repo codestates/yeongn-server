@@ -26,13 +26,20 @@ export class Sale {
   description: string;
 
   @Column()
+  contact: string;
+
+  @Column()
   imgUrl: string;
 
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @ManyToOne(() => User, (user) => user.sales)
+  @ManyToOne(() => User, (user) => user.sales, {
+    onDelete: 'CASCADE',
+  })
   user: User;
+  @Column()
+  userId: number;
 
   @OneToMany(() => SalesComment, (salesComment) => salesComment.sale)
   salesComments: SalesComment[];

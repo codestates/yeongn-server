@@ -10,9 +10,17 @@ export class UsersAppraisalsPrice {
   @Column()
   price: number;
 
-  @ManyToOne(() => User, (user) => user.usersAppraisalsPrices)
+  @ManyToOne(() => User, (user) => user.usersAppraisalsPrices, {
+    onDelete: 'CASCADE',
+  })
   user: User;
+  @Column()
+  userId: number;
 
-  @ManyToOne(() => Appraisal, (appraisal) => appraisal.usersAppraisalsPrices)
+  @ManyToOne(() => Appraisal, (appraisal) => appraisal.usersAppraisalsPrices, {
+    onDelete: 'CASCADE',
+  })
   appraisal: Appraisal;
+  @Column()
+  appraisalId: number;
 }
