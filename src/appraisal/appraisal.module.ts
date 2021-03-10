@@ -4,13 +4,11 @@ import { AppraisalService } from './appraisal.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Appraisal } from 'src/entity/Appraisal.entity';
 import { AppraisalsComment } from 'src/entity/AppraisalsComment.entity';
-import { AppraisalsImage } from 'src/entity/AppraisalsImage.entity';
+import { ImageUploadService } from 'src/image-upload/image-upload.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Appraisal, AppraisalsComment, AppraisalsImage]),
-  ],
+  imports: [TypeOrmModule.forFeature([Appraisal, AppraisalsComment])],
+  providers: [AppraisalService, ImageUploadService],
   controllers: [AppraisalController],
-  providers: [AppraisalService],
 })
 export class AppraisalModule {}

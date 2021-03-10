@@ -3,8 +3,6 @@ import * as dotenv from 'dotenv';
 import { User } from './entity/User.entity';
 import { Appraisal } from './entity/Appraisal.entity';
 import { Sale } from './entity/Sale.entity';
-import { AppraisalsImage } from './entity/AppraisalsImage.entity';
-import { SalesImage } from './entity/SalesImage.entity';
 import { AppraisalsComment } from './entity/AppraisalsComment.entity';
 import { SalesComment } from './entity/SalesComment.entity';
 import { UsersAppraisalsPrice } from './entity/UsersAppraisalsPrice.entity';
@@ -22,8 +20,6 @@ const config: ConnectionOptions = {
     User,
     Appraisal,
     Sale,
-    AppraisalsImage,
-    SalesImage,
     AppraisalsComment,
     SalesComment,
     UsersAppraisalsPrice,

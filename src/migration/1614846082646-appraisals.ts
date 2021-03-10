@@ -34,6 +34,10 @@ export class appraisals1614846082646 implements MigrationInterface {
             type: 'varchar',
           },
           {
+            name: 'imgUrl',
+            type: 'varchar',
+          },
+          {
             name: 'createdAt',
             type: 'datetime',
             default: 'now()',

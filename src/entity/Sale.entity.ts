@@ -7,7 +7,6 @@ import {
 } from 'typeorm';
 import { User } from './User.entity';
 import { SalesComment } from './SalesComment.entity';
-import { SalesImage } from './SalesImage.entity';
 
 @Entity({ name: 'sales' })
 export class Sale {
@@ -26,6 +25,9 @@ export class Sale {
   @Column()
   description: string;
 
+  @Column()
+  imgUrl: string;
+
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
@@ -34,7 +36,4 @@ export class Sale {
 
   @OneToMany(() => SalesComment, (salesComment) => salesComment.sale)
   salesComments: SalesComment[];
-
-  @OneToMany(() => SalesImage, (salesImage) => salesImage.sale)
-  salesImages: SalesImage[];
 }

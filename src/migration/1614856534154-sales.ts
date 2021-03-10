@@ -38,6 +38,10 @@ export class sales1614856534154 implements MigrationInterface {
             type: 'varchar',
           },
           {
+            name: 'imgUrl',
+            type: 'varchar',
+          },
+          {
             name: 'createdAt',
             type: 'datetime',
             default: 'now()',

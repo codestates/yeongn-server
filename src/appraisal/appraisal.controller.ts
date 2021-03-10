@@ -1,9 +1,13 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post, Req, Res } from '@nestjs/common';
+import { AppraisalService } from './appraisal.service';
+import { FastifyRequest, FastifyReply } from 'fastify';
 
-@Controller('appraisal')
+@Controller('api/appraisal')
 export class AppraisalController {
-  @Get()
-  home() {
-    return 'Welcome to my Appraisal API';
+  constructor(private readonly appraisalService: AppraisalService) {}
+
+  @Post()
+  createPost(@Req() req: FastifyRequest, @Res() res: FastifyReply) {
+    return this.appraisalService.postAppraisal(req, res);
   }
 }
