@@ -2,6 +2,7 @@ import {
   Injectable,
   InternalServerErrorException,
   ForbiddenException,
+  NotAcceptableException,
 } from '@nestjs/common';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { ImageUploadService } from 'src/image-upload/image-upload.service';
@@ -26,7 +27,19 @@ export class AppraisalService {
 
     const tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
     try {
-      const url = await this.imageUploadService.uploadImage(
+      const itemName: string = formdata['title'].value;
+      const category: string = formdata['category'].value;
+      const description: string = formdata['text'].value;
+      const userPrice: string = formdata['price'].value;
+      const titleRegex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|\s]*$/;
+      if (!itemName || !category || !description || !userPrice) {
+        throw new NotAcceptableException('입력안한값이 있다!');
+      }
+      if (!titleRegex.test(itemName)) {
+        throw new NotAcceptableException('제목의 상태가 영 좋지않네');
+      }
+
+      const imgUrl = await this.imageUploadService.uploadImage(
         image.filename,
         buffer,
       );
@@ -34,16 +47,20 @@ export class AppraisalService {
 
       const newAppraisal = new Appraisal();
 
-      newAppraisal.itemName = formdata['title'].value;
-      newAppraisal.category = formdata['category'].value;
-      newAppraisal.description = formdata['text'].value;
-      newAppraisal.userPrice = formdata['price'].value;
-      newAppraisal.imgUrl = url;
+      newAppraisal.itemName = itemName;
+      newAppraisal.category = category;
+      newAppraisal.description = description;
+      newAppraisal.userPrice = userPrice;
+      newAppraisal.imgUrl = imgUrl;
       newAppraisal.userId = userId;
 
       await this.appraisalRepository.save(newAppraisal);
+
       console.log(newAppraisal);
-      res.code(201).send('created!');
+      res.code(201).send({
+        appraisalId: newAppraisal.id,
+        message: 'created!',
+      });
     } catch {
       throw new InternalServerErrorException();
     }
