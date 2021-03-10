@@ -59,7 +59,7 @@ export class ShopService {
       await this.saleRepository.save(newSale);
 
       console.log(newSale);
-      res.code(201).send({
+      res.send({
         saleId: newSale.id,
         message: 'created!',
       });

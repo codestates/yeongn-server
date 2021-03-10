@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Req, Res, Delete, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  Delete,
+  Param,
+  Patch,
+} from '@nestjs/common';
 import { AppraisalService } from './appraisal.service';
 import { FastifyRequest, FastifyReply } from 'fastify';
 
@@ -18,5 +27,14 @@ export class AppraisalController {
     @Param('appraisalId') appraisalId: string,
   ) {
     return this.appraisalService.deleteAppraisal(req, res, appraisalId);
+  }
+
+  @Patch('/:appraisalId')
+  modifyPost(
+    @Req() req: FastifyRequest,
+    @Res() res: FastifyReply,
+    @Param('appraisalId') appraisalId: string,
+  ) {
+    return this.appraisalService.modifyAppraisal(req, res, appraisalId);
   }
 }
