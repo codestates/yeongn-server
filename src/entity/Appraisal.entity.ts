@@ -7,7 +7,6 @@ import {
 } from 'typeorm';
 import { User } from './User.entity';
 import { AppraisalsComment } from './AppraisalsComment.entity';
-import { AppraisalsImage } from './AppraisalsImage.entity';
 import { UsersAppraisalsPrice } from './UsersAppraisalsPrice.entity';
 
 @Entity({ name: 'appraisals' })
@@ -27,23 +26,24 @@ export class Appraisal {
   @Column()
   description: string;
 
+  @Column()
+  imgUrl: string;
+
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @ManyToOne(() => User, (user) => user.appraisals)
+  @ManyToOne(() => User, (user) => user.appraisals, {
+    onDelete: 'CASCADE',
+  })
   user: User;
+  @Column()
+  userId: number;
 
   @OneToMany(
     () => AppraisalsComment,
     (appraisalsComment) => appraisalsComment.appraisal,
   )
   appraisalsComments: AppraisalsComment[];
-
-  @OneToMany(
-    () => AppraisalsImage,
-    (appraisalsImage) => appraisalsImage.appraisal,
-  )
-  appraisalsImages: AppraisalsImage[];
 
   @OneToMany(
     () => UsersAppraisalsPrice,

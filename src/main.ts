@@ -5,13 +5,15 @@ import {
 } from '@nestjs/platform-fastify';
 import fastifyCookie from 'fastify-cookie';
 import { AppModule } from './app.module';
+import fmp from 'fastify-multipart';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter(),
+    new FastifyAdapter({ logger: true }),
   );
   app.register(fastifyCookie);
+  app.register(fmp, { attachFieldsToBody: true });
   app.enableCors({
     origin: [
       'http://localhost:3000',

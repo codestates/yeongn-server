@@ -13,9 +13,17 @@ export class AppraisalsComment {
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @ManyToOne(() => User, (user) => user.appraisalsComments)
+  @ManyToOne(() => User, (user) => user.appraisalsComments, {
+    onDelete: 'CASCADE',
+  })
   user: User;
+  @Column()
+  userId: number;
 
-  @ManyToOne(() => Appraisal, (appraisal) => appraisal.appraisalsComments)
+  @ManyToOne(() => Appraisal, (appraisal) => appraisal.appraisalsComments, {
+    onDelete: 'CASCADE',
+  })
   appraisal: Appraisal;
+  @Column()
+  appraisalId: number;
 }

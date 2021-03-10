@@ -18,7 +18,7 @@ export class UserService {
     httpOnly: false,
     maxAge: 1000 * 60 * 10,
     path: '/',
-    domain: 'localhost',
+    domain: 'yeongn.com',
   };
   constructor(
     @InjectRepository(User)
@@ -54,7 +54,6 @@ export class UserService {
           },
         )
         .toPromise();
-      console.log(accessTokenFromGoogle);
       const dataFromToken = await this.httpService
         .get(GET_DATA_URI, {
           headers: {
