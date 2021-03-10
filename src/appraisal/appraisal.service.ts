@@ -3,6 +3,7 @@ import {
   InternalServerErrorException,
   ForbiddenException,
   NotAcceptableException,
+  NotFoundException,
 } from '@nestjs/common';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { ImageUploadService } from 'src/image-upload/image-upload.service';
@@ -65,4 +66,35 @@ export class AppraisalService {
       throw new InternalServerErrorException();
     }
   }
+
+  async deleteAppraisal(
+    req: FastifyRequest,
+    res: FastifyReply,
+    appraisalId: string,
+  ) {
+    const auth = req.headers['authorization'];
+    if (!auth) throw new ForbiddenException();
+    const tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
+    const userId = tokenData['id'];
+
+    const targetPost: Appraisal = await this.appraisalRepository.findOne(
+      +appraisalId,
+    );
+    if (!targetPost) {
+      throw new NotFoundException('포스트를 찾을수 없음');
+    }
+    if (targetPost.userId !== userId) {
+      throw new NotAcceptableException('권한이 없으셈');
+    }
+    await this.appraisalRepository.remove(targetPost);
+    res.send({
+      message: 'deleted!',
+    });
+  }
+
+  async modifyAppraisal(
+    req: FastifyRequest,
+    res: FastifyReply,
+    appraisalId: string,
+  ) {}
 }
