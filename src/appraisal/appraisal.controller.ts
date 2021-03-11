@@ -73,4 +73,9 @@ export class AppraisalController {
   ) {
     return this.appraisalService.recommendAppraisal(req, res, appraisalId);
   }
+
+  @Get()
+  getAll() {
+    return this.appraisalService.getAppraisals();
+  }
 }

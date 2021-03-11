@@ -256,4 +256,33 @@ export class AppraisalService {
 
     res.send({ count: result });
   }
+
+  async getAppraisals() {
+    const appraisals = await this.appraisalRepository.find({
+      relations: ['user', 'usersAppraisalsPrices'],
+    });
+    const result = await Promise.all(
+      appraisals.map(async (appraisal) => {
+        appraisal['nickname'] = appraisal.user.nickname;
+        const key = `appraisal:${appraisal.id}`;
+        delete appraisal.user;
+        if (appraisal.usersAppraisalsPrices.length) {
+          const sum = appraisal.usersAppraisalsPrices.reduce(
+            (acc, appraisal) => {
+              return acc + appraisal.price;
+            },
+            0,
+          );
+          appraisal['average'] = Math.floor(
+            sum / appraisal.usersAppraisalsPrices.length,
+          );
+        } else {
+          appraisal['average'] = 0;
+        }
+        appraisal['likeCount'] = await this.recommendService.getCount(key);
+        return appraisal;
+      }),
+    );
+    return result;
+  }
 }
