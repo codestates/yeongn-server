@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   NotAcceptableException,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { ImageUploadService } from 'src/image-upload/image-upload.service';
@@ -301,7 +302,7 @@ export class AppraisalService {
     }
 
     const appraisal = await this.appraisalRepository.findOne(appraisalId, {
-      relations: ['user', 'usersAppraisalsPrices'],
+      relations: ['user', 'usersAppraisalsPrices', 'appraisalsComments'],
     });
     const key = `appraisal:${appraisal.id}`;
 
@@ -341,5 +342,31 @@ export class AppraisalService {
     }
 
     return appraisal;
+  }
+
+  async appraise(req: FastifyRequest, appraisalId: string) {
+    const auth = req.headers['authorization'];
+    if (!auth) throw new ForbiddenException();
+    const tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
+    const userId = tokenData['id'];
+
+    const didAppraise = await this.usersAppraisalsPrice.findOne({
+      where: {
+        userId,
+        appraisalId: +appraisalId,
+      },
+    });
+    if (didAppraise) throw new BadRequestException('이미 감정함');
+
+    const newAppraise = new UsersAppraisalsPrice();
+    newAppraise.userId = userId;
+    newAppraise.appraisalId = +appraisalId;
+    newAppraise.price = req.body['price'];
+    await this.usersAppraisalsPrice.save(newAppraise);
+
+    return {
+      message: 'appraised!',
+      data: newAppraise,
+    };
   }
 }
