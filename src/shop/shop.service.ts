@@ -124,6 +124,7 @@ export class ShopService {
         description,
         userPrice,
         imgUrl,
+        contact,
       });
       res.send({
         message: 'modified :3',
