@@ -11,11 +11,14 @@ import { JwtService } from 'src/jwt/jwt.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Appraisal } from 'src/entity/Appraisal.entity';
+import { AppraisalsComment } from 'src/entity/AppraisalsComment.entity';
 @Injectable()
 export class AppraisalService {
   constructor(
     @InjectRepository(Appraisal)
     private appraisalRepository: Repository<Appraisal>,
+    @InjectRepository(AppraisalsComment)
+    private commentRepository: Repository<AppraisalsComment>,
     private imageUploadService: ImageUploadService,
     private jwt: JwtService,
   ) {}
@@ -32,18 +35,16 @@ export class AppraisalService {
       const category: string = formdata['category'].value;
       const description: string = formdata['text'].value;
       const userPrice: string = formdata['price'].value;
-      const titleRegex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|\s]*$/;
       if (!itemName || !category || !description || !userPrice) {
+        console.log(2);
         throw new NotAcceptableException('입력안한값이 있다!');
       }
-      if (!titleRegex.test(itemName)) {
-        throw new NotAcceptableException('제목의 상태가 영 좋지않네');
-      }
-
+      console.log(4);
       const imgUrl = await this.imageUploadService.uploadImage(
         image.filename,
         buffer,
       );
+      console.log(5);
       const userId: number = tokenData['id'];
 
       const newAppraisal = new Appraisal();
@@ -111,14 +112,9 @@ export class AppraisalService {
     const category: string = formdata['category'].value;
     const description: string = formdata['text'].value;
     const userPrice: string = formdata['price'].value;
-    const titleRegex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|\s]*$/;
     if (!itemName || !category || !description || !userPrice) {
       throw new NotAcceptableException('입력안한값이 있다!');
     }
-    if (!titleRegex.test(itemName)) {
-      throw new NotAcceptableException('제목의 상태가 영 좋지않네');
-    }
-
     if (image) {
       const buffer: Buffer = await image.toBuffer();
       imgUrl = await this.imageUploadService.uploadImage(
@@ -158,5 +154,91 @@ export class AppraisalService {
         message: 'modified :3',
       });
     }
+  }
+
+  async createComment(req: FastifyRequest, res: FastifyReply, appraisalId) {
+    const auth = req.headers['authorization'];
+    if (!auth) throw new ForbiddenException();
+    const tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
+    const userId = tokenData['id'];
+
+    if (!req.body['text']) {
+      throw new NotAcceptableException('내용이 없네용..');
+    }
+
+    const newComment = new AppraisalsComment();
+    newComment.text = req.body['text'];
+    newComment.appraisalId = appraisalId;
+    newComment.userId = userId;
+    await this.commentRepository.save(newComment);
+
+    res.send({
+      commentId: newComment.id,
+      message: 'created :3',
+    });
+  }
+
+  async modifyComment(
+    req: FastifyRequest,
+    res: FastifyReply,
+    commentId: string,
+  ) {
+    const auth = req.headers['authorization'];
+    if (!auth) throw new ForbiddenException();
+    const tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
+    const userId = tokenData['id'];
+
+    if (!req.body['text']) {
+      throw new NotAcceptableException('내용이 없네용..');
+    }
+
+    const targetComment = await this.commentRepository.findOne(+commentId);
+
+    if (!targetComment) {
+      throw new NotFoundException('못찾겠어용..');
+    }
+
+    if (targetComment.userId !== userId) {
+      throw new ForbiddenException('권한이 없네용..');
+    }
+
+    this.commentRepository.update(+commentId, {
+      text: req.body['text'],
+    });
+
+    res.send({
+      commentId: +commentId,
+      message: 'updated :3',
+    });
+  }
+
+  async deleteComment(
+    req: FastifyRequest,
+    res: FastifyReply,
+    commentId: string,
+  ) {
+    const auth = req.headers['authorization'];
+    if (!auth) throw new ForbiddenException();
+    const tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
+    const userId = tokenData['id'];
+
+    const targetComment: AppraisalsComment | null = await this.commentRepository.findOne(
+      +commentId,
+    );
+
+    if (!targetComment) {
+      throw new NotFoundException('못찾겠어용..');
+    }
+
+    if (targetComment.userId !== userId) {
+      throw new ForbiddenException('권한이 없네용..');
+    }
+
+    await this.commentRepository.remove(targetComment);
+
+    res.send({
+      removedCommentId: +commentId,
+      message: 'removed :3',
+    });
   }
 }
