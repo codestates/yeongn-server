@@ -177,4 +177,68 @@ export class AppraisalService {
       message: 'created :3',
     });
   }
+
+  async modifyComment(
+    req: FastifyRequest,
+    res: FastifyReply,
+    commentId: string,
+  ) {
+    const auth = req.headers['authorization'];
+    if (!auth) throw new ForbiddenException();
+    const tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
+    const userId = tokenData['id'];
+
+    if (!req.body['text']) {
+      throw new NotAcceptableException('내용이 없네용..');
+    }
+
+    const targetComment = await this.commentRepository.findOne(+commentId);
+
+    if (!targetComment) {
+      throw new NotFoundException('못찾겠어용..');
+    }
+
+    if (targetComment.userId !== userId) {
+      throw new ForbiddenException('권한이 없네용..');
+    }
+
+    this.commentRepository.update(+commentId, {
+      text: req.body['text'],
+    });
+
+    res.send({
+      commentId: +commentId,
+      message: 'updated :3',
+    });
+  }
+
+  async deleteComment(
+    req: FastifyRequest,
+    res: FastifyReply,
+    commentId: string,
+  ) {
+    const auth = req.headers['authorization'];
+    if (!auth) throw new ForbiddenException();
+    const tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
+    const userId = tokenData['id'];
+
+    const targetComment: AppraisalsComment | null = await this.commentRepository.findOne(
+      +commentId,
+    );
+
+    if (!targetComment) {
+      throw new NotFoundException('못찾겠어용..');
+    }
+
+    if (targetComment.userId !== userId) {
+      throw new ForbiddenException('권한이 없네용..');
+    }
+
+    await this.commentRepository.remove(targetComment);
+
+    res.send({
+      removedCommentId: +commentId,
+      message: 'removed :3',
+    });
+  }
 }
