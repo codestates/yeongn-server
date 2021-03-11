@@ -11,7 +11,7 @@ export class RecommendService {
   private client;
 
   constructor() {
-    this.client = this.getClient();
+    this.getClient();
   }
 
   private async getClient() {
@@ -29,7 +29,7 @@ export class RecommendService {
     if (isExist) {
       await this.client.srem(key, value);
     } else {
-      await this.client.sadd();
+      await this.client.sadd(key, value);
     }
 
     const count = await this.getCount(key);

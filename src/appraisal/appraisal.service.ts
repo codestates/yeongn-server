@@ -12,6 +12,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Appraisal } from 'src/entity/Appraisal.entity';
 import { AppraisalsComment } from 'src/entity/AppraisalsComment.entity';
+import { RecommendService } from 'src/recommend/recommend.service';
 @Injectable()
 export class AppraisalService {
   constructor(
@@ -21,6 +22,7 @@ export class AppraisalService {
     private commentRepository: Repository<AppraisalsComment>,
     private imageUploadService: ImageUploadService,
     private jwt: JwtService,
+    private recommendService: RecommendService,
   ) {}
   async postAppraisal(req: FastifyRequest, res: FastifyReply) {
     const auth = req.headers['authorization'];
@@ -237,5 +239,21 @@ export class AppraisalService {
       removedCommentId: +commentId,
       message: 'removed :3',
     });
+  }
+
+  async recommendAppraisal(
+    req: FastifyRequest,
+    res: FastifyReply,
+    appraisalId: string,
+  ) {
+    const auth = req.headers['authorization'];
+    if (!auth) throw new ForbiddenException();
+    const tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
+    const userId = tokenData['id'];
+
+    const postKey = `appraisal:${appraisalId}`;
+    const result = await this.recommendService.recommend(postKey, userId + '');
+
+    res.send({ count: result });
   }
 }

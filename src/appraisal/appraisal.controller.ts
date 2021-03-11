@@ -64,4 +64,13 @@ export class AppraisalController {
   ) {
     return this.appraisalService.deleteComment(req, res, commentId);
   }
+
+  @Patch('/:appraisalId/recommend')
+  recommendAppraisal(
+    @Req() req: FastifyRequest,
+    @Res() res: FastifyReply,
+    @Param('appraisalId') appraisalId: string,
+  ) {
+    return this.appraisalService.recommendAppraisal(req, res, appraisalId);
+  }
 }
