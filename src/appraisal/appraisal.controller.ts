@@ -29,7 +29,7 @@ export class AppraisalController {
     return this.appraisalService.deleteAppraisal(req, res, appraisalId);
   }
 
-  @Patch('/:appraisalId')
+  @Patch('/:appraisalId/comment')
   modifyPost(
     @Req() req: FastifyRequest,
     @Res() res: FastifyReply,

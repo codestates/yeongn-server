@@ -33,12 +33,8 @@ export class ShopService {
       const description: string = formdata['text'].value;
       const userPrice: string = formdata['price'].value;
       const contact: string = formdata['contact'].value;
-      const titleRegex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|\s]*$/;
       if (!itemName || !category || !description || !userPrice || !contact) {
         throw new NotAcceptableException('입력안한값이 있다!');
-      }
-      if (!titleRegex.test(itemName)) {
-        throw new NotAcceptableException('제목의 상태가 영 좋지않네');
       }
       const imgUrl = await this.imageUploadService.uploadImage(
         image.filename,
