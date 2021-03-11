@@ -1,4 +1,12 @@
-import { Controller, Post, Req, Res } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Param,
+  Patch,
+  Post,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { ShopService } from './shop.service';
 import { FastifyRequest, FastifyReply } from 'fastify';
 
@@ -9,5 +17,23 @@ export class ShopController {
   @Post()
   createSale(@Req() req: FastifyRequest, @Res() res: FastifyReply) {
     this.shopService.postSale(req, res);
+  }
+
+  @Delete('/:saleId')
+  deleteSale(
+    @Req() req: FastifyRequest,
+    @Res() res: FastifyReply,
+    @Param('saleId') saleId: string,
+  ) {
+    return this.shopService.deleteSale(req, res, saleId);
+  }
+
+  @Patch('/:saleId')
+  modifySale(
+    @Req() req: FastifyRequest,
+    @Res() res: FastifyReply,
+    @Param('saleId') saleId: string,
+  ) {
+    return this.shopService.modifySale(req, res, saleId);
   }
 }
