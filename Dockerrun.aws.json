@@ -16,13 +16,6 @@
       "memory": 128
     },
     {
-      "name": "redis",
-      "image": "sleepybird96/yeongn-redis",
-      "hostname": "redis",
-      "essential": false,
-      "memory": 128
-    },
-    {
       "name": "nginx",
       "image": "sleepybird96/yeongn-nginx",
       "hostname": "nginx",
