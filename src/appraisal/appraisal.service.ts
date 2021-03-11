@@ -13,6 +13,7 @@ import { Repository } from 'typeorm';
 import { Appraisal } from 'src/entity/Appraisal.entity';
 import { AppraisalsComment } from 'src/entity/AppraisalsComment.entity';
 import { RecommendService } from 'src/recommend/recommend.service';
+import { UsersAppraisalsPrice } from 'src/entity/UsersAppraisalsPrice.entity';
 @Injectable()
 export class AppraisalService {
   constructor(
@@ -20,6 +21,8 @@ export class AppraisalService {
     private appraisalRepository: Repository<Appraisal>,
     @InjectRepository(AppraisalsComment)
     private commentRepository: Repository<AppraisalsComment>,
+    @InjectRepository(UsersAppraisalsPrice)
+    private usersAppraisalsPrice: Repository<UsersAppraisalsPrice>,
     private imageUploadService: ImageUploadService,
     private jwt: JwtService,
     private recommendService: RecommendService,
@@ -284,5 +287,59 @@ export class AppraisalService {
       }),
     );
     return result;
+  }
+
+  async getAppraisal(req: FastifyRequest, appraisalId: string) {
+    const auth = req.headers['authorization'];
+
+    let tokenData;
+    let userId;
+
+    if (auth) {
+      tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
+      if (tokenData) userId = tokenData['id'];
+    }
+
+    const appraisal = await this.appraisalRepository.findOne(appraisalId, {
+      relations: ['user', 'usersAppraisalsPrices'],
+    });
+    const key = `appraisal:${appraisal.id}`;
+
+    appraisal['nickname'] = appraisal.user.nickname;
+    delete appraisal.user;
+
+    if (appraisal.usersAppraisalsPrices.length) {
+      const sum = appraisal.usersAppraisalsPrices.reduce((acc, appraisal) => {
+        return acc + appraisal.price;
+      }, 0);
+      appraisal['average'] = Math.floor(
+        sum / appraisal.usersAppraisalsPrices.length,
+      );
+    } else {
+      appraisal['average'] = 0;
+    }
+    appraisal['appraisalCount'] = appraisal.usersAppraisalsPrices.length;
+    appraisal['likeCount'] = await this.recommendService.getCount(key);
+
+    if (userId) {
+      appraisal['isRecommend'] = await this.recommendService.isRecommend(
+        key,
+        userId,
+      );
+      const didAppraisal = await this.usersAppraisalsPrice.findOne({
+        where: {
+          userId,
+          appraisalId: +appraisalId,
+        },
+      });
+      if (didAppraisal) {
+        appraisal['didAppraisal'] = true;
+        appraisal['myAppraisal'] = didAppraisal.price;
+      } else {
+        appraisal['didAppraisal'] = false;
+      }
+    }
+
+    return appraisal;
   }
 }
