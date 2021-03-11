@@ -78,4 +78,12 @@ export class AppraisalController {
   getAll() {
     return this.appraisalService.getAppraisals();
   }
+
+  @Get('/:appraisalId')
+  getOne(
+    @Req() req: FastifyRequest,
+    @Param('appraisalId') appraisalId: string,
+  ) {
+    return this.appraisalService.getAppraisal(req, appraisalId);
+  }
 }
