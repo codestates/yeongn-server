@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 import { ImageUploadService } from 'src/image-upload/image-upload.service';
 import { JwtService } from 'src/jwt/jwt.service';
 import { FastifyRequest, FastifyReply } from 'fastify';
+import { SalesComment } from 'src/entity/SalesComment.entity';
 
 @Injectable()
 export class ShopService {
@@ -19,6 +20,8 @@ export class ShopService {
     private saleRepository: Repository<Sale>,
     private imageUploadService: ImageUploadService,
     private jwt: JwtService,
+    @InjectRepository(SalesComment)
+    private commentRepository: Repository<SalesComment>,
   ) {}
   async postSale(req: FastifyRequest, res: FastifyReply) {
     const auth = req.headers['authorization'];
@@ -141,5 +144,90 @@ export class ShopService {
         message: 'modified :3',
       });
     }
+  }
+  async createComment(req: FastifyRequest, res: FastifyReply, saleId) {
+    const auth = req.headers['authorization'];
+    if (!auth) throw new ForbiddenException();
+    const tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
+    const userId = tokenData['id'];
+
+    if (!req.body['text']) {
+      throw new NotAcceptableException('내용이 없네용..');
+    }
+
+    const newComment = new SalesComment();
+    newComment.text = req.body['text'];
+    newComment.saleId = saleId;
+    newComment.userId = userId;
+    await this.commentRepository.save(newComment);
+
+    res.send({
+      commentId: newComment.id,
+      message: 'created :3',
+    });
+  }
+
+  async modifyComment(
+    req: FastifyRequest,
+    res: FastifyReply,
+    commentId: string,
+  ) {
+    const auth = req.headers['authorization'];
+    if (!auth) throw new ForbiddenException();
+    const tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
+    const userId = tokenData['id'];
+
+    if (!req.body['text']) {
+      throw new NotAcceptableException('내용이 없네용..');
+    }
+
+    const targetComment = await this.commentRepository.findOne(+commentId);
+
+    if (!targetComment) {
+      throw new NotFoundException('못찾겠어용..');
+    }
+
+    if (targetComment.userId !== userId) {
+      throw new ForbiddenException('권한이 없네용..');
+    }
+
+    this.commentRepository.update(+commentId, {
+      text: req.body['text'],
+    });
+
+    res.send({
+      commentId: +commentId,
+      message: 'updated :3',
+    });
+  }
+
+  async deleteComment(
+    req: FastifyRequest,
+    res: FastifyReply,
+    commentId: string,
+  ) {
+    const auth = req.headers['authorization'];
+    if (!auth) throw new ForbiddenException();
+    const tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
+    const userId = tokenData['id'];
+
+    const targetComment: SalesComment | null = await this.commentRepository.findOne(
+      +commentId,
+    );
+
+    if (!targetComment) {
+      throw new NotFoundException('못찾겠어용..');
+    }
+
+    if (targetComment.userId !== userId) {
+      throw new ForbiddenException('권한이 없네용..');
+    }
+
+    await this.commentRepository.remove(targetComment);
+
+    res.send({
+      removedCommentId: +commentId,
+      message: 'removed :3',
+    });
   }
 }

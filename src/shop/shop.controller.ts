@@ -36,4 +36,29 @@ export class ShopController {
   ) {
     return this.shopService.modifySale(req, res, saleId);
   }
+  @Post('/:postId/comment')
+  createComment(
+    @Req() req: FastifyRequest,
+    @Res() res: FastifyReply,
+    @Param('postId') postId: string,
+  ) {
+    return this.shopService.createComment(req, res, postId);
+  }
+  @Patch('/comment/:commentId')
+  modifyComment(
+    @Req() req: FastifyRequest,
+    @Res() res: FastifyReply,
+    @Param('commentId') commentId: string,
+  ) {
+    return this.shopService.modifyComment(req, res, commentId);
+  }
+
+  @Delete('/comment/:commentId')
+  deleteComment(
+    @Req() req: FastifyRequest,
+    @Res() res: FastifyReply,
+    @Param('commentId') commentId: string,
+  ) {
+    return this.shopService.deleteComment(req, res, commentId);
+  }
 }
