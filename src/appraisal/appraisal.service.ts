@@ -36,15 +36,12 @@ export class AppraisalService {
       const description: string = formdata['text'].value;
       const userPrice: string = formdata['price'].value;
       if (!itemName || !category || !description || !userPrice) {
-        console.log(2);
         throw new NotAcceptableException('입력안한값이 있다!');
       }
-      console.log(4);
       const imgUrl = await this.imageUploadService.uploadImage(
         image.filename,
         buffer,
       );
-      console.log(5);
       const userId: number = tokenData['id'];
 
       const newAppraisal = new Appraisal();
