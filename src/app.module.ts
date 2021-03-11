@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AppraisalModule } from './appraisal/appraisal.module';
 import { ShopModule } from './shop/shop.module';
+import { RecommendService } from './recommend/recommend.service';
 import * as ormconfig from './ormconfig';
 
 @Module({
@@ -15,6 +16,6 @@ import * as ormconfig from './ormconfig';
     AppraisalModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, RecommendService],
 })
 export class AppModule {}

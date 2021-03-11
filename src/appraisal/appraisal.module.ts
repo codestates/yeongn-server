@@ -7,10 +7,16 @@ import { AppraisalsComment } from 'src/entity/AppraisalsComment.entity';
 import { ImageUploadService } from 'src/image-upload/image-upload.service';
 import { JwtService } from 'src/jwt/jwt.service';
 import { User } from 'src/entity/User.entity';
+import { RecommendService } from 'src/recommend/recommend.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Appraisal, AppraisalsComment, User])],
-  providers: [AppraisalService, ImageUploadService, JwtService],
+  providers: [
+    AppraisalService,
+    ImageUploadService,
+    JwtService,
+    RecommendService,
+  ],
   controllers: [AppraisalController],
 })
 export class AppraisalModule {}
