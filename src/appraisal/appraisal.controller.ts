@@ -86,4 +86,12 @@ export class AppraisalController {
   ) {
     return this.appraisalService.getAppraisal(req, appraisalId);
   }
+
+  @Post('/:appraisalId')
+  appraise(
+    @Req() req: FastifyRequest,
+    @Param('appraisalId') appraisalId: string,
+  ) {
+    return this.appraisalService.appraise(req, appraisalId);
+  }
 }
