@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   HttpService,
   BadGatewayException,
+  NotAcceptableException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -212,6 +213,25 @@ export class UserService {
     delete userData.usersAppraisalsPrices;
 
     return userData;
+  }
+  async changNickname(req: FastifyRequest) {
+    const auth = req.headers['authorization'];
+    if (!auth) throw new ForbiddenException();
+    const tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
+    const userId = tokenData['id'];
+    const nickname: string = req.body['nickname'];
+
+    const regex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$/;
+    if (!regex.test(nickname)) {
+      throw new NotAcceptableException('입력을 제대로..');
+    }
+
+    await this.usersRepository.update(userId, { nickname });
+
+    return {
+      message: 'modified :3',
+      nickname: nickname,
+    };
   }
   withdrawal() {}
   logout() {}

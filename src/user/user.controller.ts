@@ -7,6 +7,7 @@ import {
   Body,
   Session,
   Res,
+  Patch,
 } from '@nestjs/common';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { UserService } from './user.service';
@@ -43,6 +44,11 @@ export class UserController {
   @Get()
   getUserData(@Req() req: FastifyRequest) {
     return this.userService.getUserData(req);
+  }
+
+  @Patch()
+  changeNickname(@Req() req: FastifyRequest) {
+    return this.userService.changNickname(req);
   }
 
   @Post('/logout')
