@@ -268,8 +268,8 @@ export class AppraisalService {
     const result = await Promise.all(
       appraisals.map(async (appraisal) => {
         appraisal['nickname'] = appraisal.user.nickname;
-        const key = `appraisal:${appraisal.id}`;
         delete appraisal.user;
+        const key = `appraisal:${appraisal.id}`;
         if (appraisal.usersAppraisalsPrices.length) {
           const sum = appraisal.usersAppraisalsPrices.reduce(
             (acc, appraisal) => {
@@ -301,10 +301,23 @@ export class AppraisalService {
       if (tokenData) userId = tokenData['id'];
     }
 
-    const appraisal = await this.appraisalRepository.findOne(appraisalId, {
-      relations: ['user', 'usersAppraisalsPrices', 'appraisalsComments'],
+    const appraisal = await this.appraisalRepository.findOne(+appraisalId, {
+      relations: ['user', 'usersAppraisalsPrices'],
     });
     const key = `appraisal:${appraisal.id}`;
+
+    const comments = (
+      await this.commentRepository.find({
+        relations: ['user'],
+        where: { appraisalId: +appraisalId },
+      })
+    ).map((comment) => {
+      comment['nickname'] = comment.user.nickname;
+      delete comment.user;
+      return comment;
+    });
+
+    appraisal['comments'] = comments;
 
     appraisal['nickname'] = appraisal.user.nickname;
     delete appraisal.user;
