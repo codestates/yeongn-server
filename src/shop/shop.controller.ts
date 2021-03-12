@@ -6,6 +6,7 @@ import {
   Post,
   Req,
   Res,
+  Get,
 } from '@nestjs/common';
 import { ShopService } from './shop.service';
 import { FastifyRequest, FastifyReply } from 'fastify';
@@ -60,5 +61,15 @@ export class ShopController {
     @Param('commentId') commentId: string,
   ) {
     return this.shopService.deleteComment(req, res, commentId);
+  }
+
+  @Get()
+  getAll() {
+    return this.shopService.getSales();
+  }
+
+  @Get('/:saleId')
+  getOne(@Req() req: FastifyRequest, @Param('saleId') saleId: string) {
+    return this.shopService.getSale(req, saleId);
   }
 }

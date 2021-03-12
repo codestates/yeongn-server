@@ -12,6 +12,7 @@ import { ImageUploadService } from 'src/image-upload/image-upload.service';
 import { JwtService } from 'src/jwt/jwt.service';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { SalesComment } from 'src/entity/SalesComment.entity';
+import { RecommendService } from 'src/recommend/recommend.service';
 
 @Injectable()
 export class ShopService {
@@ -22,6 +23,7 @@ export class ShopService {
     private jwt: JwtService,
     @InjectRepository(SalesComment)
     private commentRepository: Repository<SalesComment>,
+    private recommendService: RecommendService,
   ) {}
   async postSale(req: FastifyRequest, res: FastifyReply) {
     const auth = req.headers['authorization'];
@@ -229,5 +231,65 @@ export class ShopService {
       removedCommentId: +commentId,
       message: 'removed :3',
     });
+  }
+
+  async getSales() {
+    const sales = await this.saleRepository.find({
+      relations: ['user'],
+    });
+    const result = await Promise.all(
+      sales.map(async (sale) => {
+        sale['nickname'] = sale.user.nickname;
+        delete sale.user;
+        const key = `sale:${sale.id}`;
+        sale['likeCount'] = await this.recommendService.getCount(key);
+        return sale;
+      }),
+    );
+    return result;
+  }
+
+  async getSale(req: FastifyRequest, saleId: string) {
+    const auth = req.headers['authorization'];
+
+    let tokenData;
+    let userId;
+
+    if (auth) {
+      tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
+      if (tokenData) userId = tokenData['id'];
+    }
+
+    const sale = await this.saleRepository.findOne(+saleId, {
+      relations: ['user'],
+    });
+    const key = `sale:${sale.id}`;
+
+    const comments = (
+      await this.commentRepository.find({
+        relations: ['user'],
+        where: { saleId: +saleId },
+      })
+    ).map((comment) => {
+      comment['nickname'] = comment.user.nickname;
+      delete comment.user;
+      return comment;
+    });
+
+    sale['comments'] = comments;
+
+    sale['nickname'] = sale.user.nickname;
+    delete sale.user;
+
+    sale['likeCount'] = await this.recommendService.getCount(key);
+
+    if (userId) {
+      sale['isRecommend'] = await this.recommendService.isRecommend(
+        key,
+        userId,
+      );
+    }
+
+    return sale;
   }
 }
