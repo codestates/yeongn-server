@@ -40,14 +40,14 @@ export class UserController {
     return this.userService.kakaoLogin(authorizationCode, reply);
   }
 
+  @Get()
+  getUserData(@Req() req: FastifyRequest) {
+    return this.userService.getUserData(req);
+  }
+
   @Post('/logout')
   logout(@Req() request: FastifyRequest) {
     return this.userService.logout();
-  }
-
-  @Get('/tier')
-  appraisalCount(@Req() request: FastifyRequest) {
-    return this.userService.appraisalCount();
   }
 
   @Delete('/withdrawal')

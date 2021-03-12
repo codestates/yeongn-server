@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { User } from '../entity/User.entity';
 import { JwtService } from '../jwt/jwt.service';
 import { CookieSerializeOptions } from 'fastify-cookie';
+import { FastifyRequest } from 'fastify';
 
 @Injectable()
 export class UserService {
@@ -198,7 +199,20 @@ export class UserService {
       throw new BadGatewayException();
     }
   }
-  appraisalCount() {}
+  async getUserData(req: FastifyRequest) {
+    const auth = req.headers['authorization'];
+    if (!auth) throw new ForbiddenException();
+    const tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
+    const userId = tokenData['id'];
+
+    const userData = await this.usersRepository.findOne(userId, {
+      relations: ['appraisals', 'sales', 'usersAppraisalsPrices'],
+    });
+    userData['appraisalCount'] = userData.appraisals.length;
+    delete userData.usersAppraisalsPrices;
+
+    return userData;
+  }
   withdrawal() {}
   logout() {}
 }

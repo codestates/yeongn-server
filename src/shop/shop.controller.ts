@@ -63,6 +63,15 @@ export class ShopController {
     return this.shopService.deleteComment(req, res, commentId);
   }
 
+  @Patch('/:saleId/recommend')
+  recommendSale(
+    @Req() req: FastifyRequest,
+    @Res() res: FastifyReply,
+    @Param('saleId') saleId: string,
+  ) {
+    return this.shopService.recommendSale(req, res, saleId);
+  }
+
   @Get()
   getAll() {
     return this.shopService.getSales();
