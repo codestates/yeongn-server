@@ -24,6 +24,6 @@ const config: ConnectionOptions = {
     SalesComment,
     UsersAppraisalsPrice,
   ],
-  synchronize: false,
+  synchronize: true,
 };
 export = config;
