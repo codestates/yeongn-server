@@ -154,7 +154,7 @@ export class UserService {
     }
     try {
       const CLIENT_ID = 'b862dc01a142ef533360f21219d2247b';
-      const GET_TOKEN_URI = `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${CLIENT_ID}&redirect_uri=http://localhost:3000/login&code=${authorizationCode}&client_secret=${process.env.CLIENT_SECRET_KAKAO}`;
+      const GET_TOKEN_URI = `https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id=${CLIENT_ID}&redirect_uri=https://www.yeongn.com/login&code=${authorizationCode}&client_secret=${process.env.CLIENT_SECRET_KAKAO}`;
       const GET_DATA_URI = 'https://kapi.kakao.com/v2/user/me';
 
       const accessTokenFromKakao = await this.httpService
