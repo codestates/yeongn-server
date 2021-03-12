@@ -4,6 +4,7 @@ import {
   HttpService,
   BadGatewayException,
   NotAcceptableException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -233,6 +234,19 @@ export class UserService {
       nickname: nickname,
     };
   }
-  withdrawal() {}
-  logout() {}
+  async withdrawal(req: FastifyRequest) {
+    const auth = req.headers['authorization'];
+    if (!auth) throw new ForbiddenException();
+    const tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
+    const userId = tokenData['id'];
+
+    try {
+      await this.usersRepository.delete(userId);
+    } catch {
+      throw new NotFoundException();
+    }
+    return {
+      message: 'deleted!',
+    };
+  }
 }

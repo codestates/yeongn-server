@@ -51,13 +51,8 @@ export class UserController {
     return this.userService.changeNickname(req);
   }
 
-  @Post('/logout')
-  logout(@Req() request: FastifyRequest) {
-    return this.userService.logout();
-  }
-
-  @Delete('/withdrawal')
-  withdrawal(@Req() request: FastifyRequest) {
-    return this.userService.withdrawal();
+  @Delete()
+  withdrawal(@Req() req: FastifyRequest) {
+    return this.userService.withdrawal(req);
   }
 }
