@@ -233,6 +233,18 @@ export class ShopService {
     });
   }
 
+  async recommendSale(req: FastifyRequest, res: FastifyReply, saleId: string) {
+    const auth = req.headers['authorization'];
+    if (!auth) throw new ForbiddenException();
+    const tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
+    const userId = tokenData['id'];
+
+    const postKey = `sale:${saleId}`;
+    const result = await this.recommendService.recommend(postKey, userId + '');
+
+    res.send({ count: result });
+  }
+
   async getSales() {
     const sales = await this.saleRepository.find({
       relations: ['user'],
