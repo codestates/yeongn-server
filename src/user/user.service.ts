@@ -210,7 +210,7 @@ export class UserService {
     const userData = await this.usersRepository.findOne(userId, {
       relations: ['appraisals', 'sales', 'usersAppraisalsPrices'],
     });
-    userData['appraisalCount'] = userData.appraisals.length;
+    userData['appraisalCount'] = userData.usersAppraisalsPrices.length;
     delete userData.usersAppraisalsPrices;
 
     return userData;
