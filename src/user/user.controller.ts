@@ -48,7 +48,7 @@ export class UserController {
 
   @Patch()
   changeNickname(@Req() req: FastifyRequest) {
-    return this.userService.changNickname(req);
+    return this.userService.changeNickname(req);
   }
 
   @Post('/logout')

@@ -214,7 +214,7 @@ export class UserService {
 
     return userData;
   }
-  async changNickname(req: FastifyRequest) {
+  async changeNickname(req: FastifyRequest) {
     const auth = req.headers['authorization'];
     if (!auth) throw new ForbiddenException();
     const tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
