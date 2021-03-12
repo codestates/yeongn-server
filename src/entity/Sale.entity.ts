@@ -22,13 +22,13 @@ export class Sale {
   @Column()
   userPrice: string;
 
-  @Column()
+  @Column('varchar', { length: 1000 })
   description: string;
 
   @Column()
   contact: string;
 
-  @Column()
+  @Column('varchar', { length: 1000 })
   imgUrl: string;
 
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
