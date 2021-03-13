@@ -47,7 +47,7 @@ export class UserService {
             client_secret: process.env.CLIENT_SECRET,
             code: authorizationCode,
             grant_type: 'authorization_code',
-            redirect_uri: 'http://localhost:3000/login',
+            redirect_uri: 'https://www.yeongn.com/login',
           },
           {
             headers: {
