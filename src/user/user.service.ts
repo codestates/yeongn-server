@@ -246,15 +246,15 @@ export class UserService {
       throw new NotFoundException();
     }
 
-    res.clearCookie('token');
-    res.clearCookie('userId');
+    res.clearCookie('token', this.COOKIE_OPTION);
+    res.clearCookie('userId', this.COOKIE_OPTION);
     res.send({
       message: 'deleted!',
     });
   }
   async logout(res: FastifyReply) {
-    res.clearCookie('token');
-    res.clearCookie('userId');
+    res.clearCookie('token', this.COOKIE_OPTION);
+    res.clearCookie('userId', this.COOKIE_OPTION);
     res.send({
       message: 'bye!',
     });
