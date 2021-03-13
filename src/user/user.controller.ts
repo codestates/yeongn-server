@@ -52,7 +52,12 @@ export class UserController {
   }
 
   @Delete()
-  withdrawal(@Req() req: FastifyRequest) {
-    return this.userService.withdrawal(req);
+  withdrawal(@Req() req: FastifyRequest, @Res() res: FastifyReply) {
+    return this.userService.withdrawal(req, res);
+  }
+
+  @Post('/logout')
+  logout(@Res() res: FastifyReply) {
+    return this.userService.logout(res);
   }
 }
