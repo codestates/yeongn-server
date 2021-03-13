@@ -13,7 +13,13 @@ async function bootstrap() {
     new FastifyAdapter({ logger: true }),
   );
   app.register(fastifyCookie);
-  app.register(fmp, { attachFieldsToBody: true });
+  app.register(fmp, {
+    attachFieldsToBody: true,
+    limits: {
+      fieldSize: 15728640,
+      fileSize: 15728640,
+    },
+  });
   app.enableCors({
     origin: [
       'http://localhost:3000',
