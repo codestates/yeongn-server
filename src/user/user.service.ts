@@ -12,7 +12,7 @@ import { Repository } from 'typeorm';
 import { User } from '../entity/User.entity';
 import { JwtService } from '../jwt/jwt.service';
 import { CookieSerializeOptions } from 'fastify-cookie';
-import { FastifyRequest } from 'fastify';
+import { FastifyRequest, FastifyReply } from 'fastify';
 
 @Injectable()
 export class UserService {
@@ -234,7 +234,7 @@ export class UserService {
       nickname: nickname,
     };
   }
-  async withdrawal(req: FastifyRequest) {
+  async withdrawal(req: FastifyRequest, res: FastifyReply) {
     const auth = req.headers['authorization'];
     if (!auth) throw new ForbiddenException();
     const tokenData = await this.jwt.verifyToken(auth.split(' ')[1]);
@@ -245,8 +245,18 @@ export class UserService {
     } catch {
       throw new NotFoundException();
     }
-    return {
+
+    res.clearCookie('token');
+    res.clearCookie('userId');
+    res.send({
       message: 'deleted!',
-    };
+    });
+  }
+  async logout(res: FastifyReply) {
+    res.clearCookie('token');
+    res.clearCookie('userId');
+    res.send({
+      message: 'bye!',
+    });
   }
 }
