@@ -1,73 +1,89 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+<img src="https://i.imgur.com/VDbXnS3.gif" title="source: imgur.com" width="350"/>
+<img src="https://i.imgur.com/TKzYbDG.png" title="source: imgur.com" width= "350"/>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# ❣️ 이 세상에 무쓸모는 없다 ❣️
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+오래된 책들, 과거의 추억이 있는 물건, 집안 대대로 전해져 오는 가보, 그리고 자신만 가지고 있는 신기한 물건, 나만 알고 있는 정보 등
 
-## Description
+어떠한 것들도 다 괜찮아요! 🎩 👞 🎒 👛 💍 🩲
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+바로 지금 연근마켓에 오셔서 다른 유저들에게 감정도 받아보고 상점에 한번 팔아보세요~
 
-## Installation
+![](https://img.shields.io/badge/PROJECT-yeongn%20market-ffe0b2?style=for-the-badge)
 
-```bash
-$ npm install
-```
+www.yeongn.com 🔍
 
-## Running the app
+## 📣 팀원 소개 📣
 
-```bash
-# development
-$ npm run start
+<img src="https://i.imgur.com/qE2h937.jpg" title="source: imgur.com"  width="300px"/>
 
-# watch mode
-$ npm run start:dev
+### FrontEnd
 
-# production mode
-$ npm run start:prod
-```
+![](https://img.shields.io/badge/frontend-김창민-ffbcaf?style=for-the-badge)
 
-## Test
+![](https://img.shields.io/badge/frontend-이상권-ffbcaf?style=for-the-badge)
 
-```bash
-# unit tests
-$ npm run test
+### BackEnd
 
-# e2e tests
-$ npm run test:e2e
+![](https://img.shields.io/badge/backend-박지상-80e27e?style=for-the-badge)
 
-# test coverage
-$ npm run test:cov
-```
+![](https://img.shields.io/badge/backend-김제현-80e27e?style=for-the-badge)
 
-## Support
+# ⚒️ 사용된 기술들
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## FRONT
 
-## Stay in touch
+![](https://img.shields.io/badge/frontend-React-039be5?style=for-the-badge&logo=react)
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+![](https://img.shields.io/badge/frontend-React_Hooks-039be5?style=for-the-badge&logo=react)
 
-## License
+![](https://img.shields.io/badge/frontend-Typescript-0d47a1?style=for-the-badge&logo=typescript)
 
-Nest is [MIT licensed](LICENSE).
+## BACK
+
+![](https://img.shields.io/badge/backend-node.js-338a3e?style=for-the-badge&logo=node.js)
+
+![](https://img.shields.io/badge/backend-Fastify-000000?style=for-the-badge&logo=fastify)
+
+![](https://img.shields.io/badge/backend-nestjs-f50057?style=for-the-badge&logo=nestjs)
+
+![](https://img.shields.io/badge/backend-mysql-00acc1?style=for-the-badge&logo=mysql)
+
+![](https://img.shields.io/badge/backend-redis-ff7543?style=for-the-badge&logo=redis)
+
+![](https://img.shields.io/badge/backend-typeorm-bb002f?style=for-the-badge&logo=typeorm)
+
+## DEPLOYEMENT
+
+![](https://img.shields.io/badge/deployement-docker-1e88e5?style=for-the-badge&logo=docker)
+
+![](https://img.shields.io/badge/deployement-circleci-000000?style=for-the-badge&logo=circleci)
+
+![](https://img.shields.io/badge/deployement-nginx-1b5e20?style=for-the-badge&logo=nginx)
+
+![](https://img.shields.io/badge/deployement-RDS-f57c00?style=for-the-badge&logo=amazon%20aws)
+
+![](https://img.shields.io/badge/deployement-elasticache-f57c00?style=for-the-badge&logo=amazon%20aws)
+
+![](https://img.shields.io/badge/deployement-elasticbeanstalk-f57c00?style=for-the-badge&logo=amazon%20aws)
+
+## Version Control
+
+![](https://img.shields.io/badge/version_control-github-0d47a1?style=for-the-badge&logo=github)
+
+## 🛠 Architecture
+
+<img src="https://i.imgur.com/ztX6C0E.png" title="source: imgur.com" width="900"/>
+
+### FrontEnd Flowchart
+
+<img src="https://i.imgur.com/avco7wg.png" title="source: imgur.com" width="900" />
+
+### BackEnd Flowchart
+
+<img src="https://i.imgur.com/uCow8s7.png" title="source: imgur.com" width="900"/>
+
+## 자세한 내용 보러가기
+
+### [WIKI](https://github.com/codestates/yeongn-client/wiki)
+
