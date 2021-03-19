@@ -10,7 +10,7 @@ import fmp from 'fastify-multipart';
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter({ logger: true }),
+    new FastifyAdapter(),
   );
   app.register(fastifyCookie);
   app.register(fmp, {
@@ -21,13 +21,7 @@ async function bootstrap() {
     },
   });
   app.enableCors({
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:80',
-      'https://www.yeongn.com',
-      'http://www.yeongn.com',
-      'http://frontend',
-    ],
+    origin: ['https://www.yeongn.com'],
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,
   });
