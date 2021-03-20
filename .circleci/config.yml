@@ -30,7 +30,7 @@ jobs:
       - run:
           name: Deploy
           command: |
-            zip -r deployment-${CIRCLE_SHA1}.zip .
+            zip -r deployment-${CIRCLE_SHA1}.zip Dockerrun.aws.json
             aws s3 cp deployment-${CIRCLE_SHA1}.zip s3://yeongn-market-eb --region ap-northeast-2
             aws elasticbeanstalk create-application-version --application-name yeongn-market \
                 --version-label ${CIRCLE_SHA1} --source-bundle S3Bucket="yeongn-market-eb",S3Key="deployment-${CIRCLE_SHA1}.zip" --region ap-northeast-2
