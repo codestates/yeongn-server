@@ -11,7 +11,8 @@
 
 ![](https://img.shields.io/badge/PROJECT-yeongn%20market-ffe0b2?style=for-the-badge)
 
-www.yeongn.com 🔍
+~~www.yeongn.com~~ 🔍. 
+비용문제로 배포링크를 닫았습니다. 현생이 안바빠지면 서버리스로 마이그레이션 시도해보겠슴다:)
 
 ## 📣 팀원 소개 📣
 
